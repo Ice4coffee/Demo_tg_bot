@@ -1,6 +1,5 @@
 import logging
 import os
-from dataclasses import dataclass
 from typing import Final
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, Update
@@ -22,10 +21,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 BOT_TOKEN: Final[str | None] = os.getenv("BOT_TOKEN")
-ADMIN_ID: Final[int] = int(os.getenv("ADMIN_ID", "0"))
-FUNPAY_URL: Final[str] = "https://funpay.com/lots/offer?id=65716149"  # ссылка оставлена только как пример портфолио
 
-ASK_NAME, ASK_CONTACT, ASK_PROJECT, SUPPORT_MESSAGE = range(4)
+SUPPORT_MESSAGE = 0
 
 MAIN_MENU = ReplyKeyboardMarkup(
     [
@@ -38,209 +35,77 @@ MAIN_MENU = ReplyKeyboardMarkup(
 )
 
 HERO_TEXT = (
-    "<b>🤖 Demo Telegram Bot</b>
-
-"
-    "Этот бот создан как <b>пример работы</b> разработчика Telegram‑ботов.
-
-"
-    "Он показывает возможные элементы будущего проекта:"
-    "
-• главное меню"
-    "
-• навигацию через кнопки"
-    "
-• формы заявок"
-    "
-• информационные разделы"
-    "
-• структуру админ‑логики
-
-"
+    "<b>🤖 Demo Telegram Bot</b>\n\n"
+    "Этот бот создан как <b>пример работы</b> разработчика Telegram-ботов.\n\n"
+    "Он показывает возможные элементы будущего проекта:\n"
+    "• главное меню\n"
+    "• навигацию через кнопки\n"
+    "• формы заявок\n"
+    "• информационные разделы\n"
+    "• структуру админ-логики\n\n"
     "<i>Этот бот используется только как демонстрация функционала.</i>"
 )
 
-PORTFOLIO_TEXT = (
-    "<b>📁 Примеры функционала</b>
-
-"
-    "<b>1. Telegram‑магазин</b>
-"
-    "Каталог товаров, карточки, оформление заказа.
-
-"
-    "<b>2. Бот для заявок</b>
-"
-    "Сбор контактов клиентов, анкеты и уведомления.
-
-"
-    "<b>3. Бот для услуг</b>
-"
-    "Прайс, кейсы, запись на услугу.
-
-"
-    "<b>4. Бот с оплатой</b>
-"
-    "Интеграция платежей и автоматические статусы.
-
-"
-    "<b>5. Индивидуальная логика</b>
-"
-    "API, CRM интеграции, базы данных, админ‑панель."
-)
-
 FEATURES_TEXT = (
-    "<b>🧰 Возможности</b>
-
-"
-    "• многоуровневое меню
-"
-    "• каталог товаров и карточки
-"
-    "• формы заявок
-"
-    "• сценарии заказа
-"
-    "• уведомления админу
-"
-    "• роли и админ-разделы
-"
-    "• интеграции с API / CRM / таблицами
-"
-    "• оформление под бренд клиента
-
-"
+    "<b>🧰 Возможности</b>\n\n"
+    "• многоуровневое меню\n"
+    "• каталог товаров и карточки\n"
+    "• формы заявок\n"
+    "• сценарии заказа\n"
+    "• уведомления админу\n"
+    "• роли и админ-разделы\n"
+    "• интеграции с API / CRM / таблицами\n"
+    "• оформление под бренд клиента\n\n"
     "<i>Этот раздел показывает, какие функции могут быть реализованы в реальном проекте.</i>"
 )
 
 SHOP_TEXT = (
-    "<b>🛍 Демо магазин</b>
-
-"
-    "Это пример витрины товаров внутри Telegram-бота.
-"
+    "<b>🛍 Демо магазин</b>\n\n"
+    "Это пример витрины товаров внутри Telegram-бота.\n"
     "Ниже можно открыть демо-карточки товаров и посмотреть возможный сценарий магазина."
 )
 
 ADMIN_TEXT = (
-    "<b>🖥 Демо админ-панель</b>
-
-"
-    "Пример разделов, которые можно реализовать для администратора:
-
-"
-    "• новые заявки
-"
-    "• список заказов
-"
-    "• управление товарами
-"
-    "• рассылка
-"
-    "• статистика
-"
-    "• управление контентом
-
-"
+    "<b>🖥 Демо админ-панель</b>\n\n"
+    "Пример разделов, которые можно реализовать для администратора:\n\n"
+    "• новые заявки\n"
+    "• список заказов\n"
+    "• управление товарами\n"
+    "• рассылка\n"
+    "• статистика\n"
+    "• управление контентом\n\n"
     "<i>Это демонстрация структуры админской части.</i>"
 )
 
 CASES_TEXT = (
-    "<b>📁 Кейсы / примеры сценариев</b>
-
-"
-    "<b>1. Бот-магазин</b>
-Каталог, карточка товара, корзина, заявка.
-
-"
-    "<b>2. Бот для услуг</b>
-Презентация услуг, форма обращения, передача заявки админу.
-
-"
-    "<b>3. Внутренний бот</b>
-Роли, доступы, простая админ-панель, уведомления.
-
-"
-    "<b>4. Бот с оплатой</b>
-Счёт, оплата, выдача результата, статусы заказа."
-)
-
-PRICING_TEXT = (
-    "<b>⚙️ Архитектура демо‑бота</b>
-
-"
-    "Этот раздел показывает, как может выглядеть структура реального проекта.
-
-"
-    "• многоуровневое меню
-"
-    "• сценарии общения с пользователем
-"
-    "• сбор данных через формы
-"
-    "• админ‑уведомления
-"
-    "• возможность интеграций
-
-"
-    "Раздел используется только для демонстрации интерфейса."
-)
-
-REVIEWS_TEXT = (
-    "<b>🧪 Тестовый раздел</b>
-
-"
-    "В реальном проекте здесь могут отображаться:
-"
-    "• отзывы клиентов
-"
-    "• кейсы проектов
-"
-    "• примеры внедрения
-
-"
-    "В этом демо‑боте раздел используется только как пример интерфейса."
+    "<b>📁 Кейсы / примеры сценариев</b>\n\n"
+    "<b>1. Бот-магазин</b>\n"
+    "Каталог, карточка товара, корзина, заявка.\n\n"
+    "<b>2. Бот для услуг</b>\n"
+    "Презентация услуг, форма обращения, передача заявки админу.\n\n"
+    "<b>3. Внутренний бот</b>\n"
+    "Роли, доступы, простая админ-панель, уведомления.\n\n"
+    "<b>4. Бот с оплатой</b>\n"
+    "Счёт, оплата, выдача результата, статусы заказа."
 )
 
 ABOUT_TEXT = (
-    "<b>ℹ️ О проекте</b>
-
-"
-    "Этот Telegram‑бот создан как часть портфолио разработчика.
-
-"
-    "Цель бота — показать возможную структуру и интерфейс будущих проектов.
-
-"
-    "В демонстрации реализованы:
-"
-    "• меню и навигация
-"
-    "• формы заявок
-"
-    "• информационные блоки
-"
-    "• пример админ‑уведомлений
-
-"
+    "<b>ℹ️ О проекте</b>\n\n"
+    "Этот Telegram-бот создан как часть портфолио разработчика.\n\n"
+    "Цель бота — показать возможную структуру и интерфейс будущих проектов.\n\n"
+    "В демонстрации реализованы:\n"
+    "• меню и навигация\n"
+    "• формы заявок\n"
+    "• информационные блоки\n"
+    "• пример админ-уведомлений\n\n"
     "Бот используется исключительно как демонстрационный пример."
 )
 
 CONTACT_TEXT = (
-    "<b>📨 Демонстрация формы</b>
-
-"
-    "Этот раздел показывает пример формы обращения пользователя.
-"
+    "<b>📨 Демонстрация формы</b>\n\n"
+    "Этот раздел показывает пример формы обращения пользователя.\n"
     "В реальном проекте здесь можно реализовать связь с менеджером или поддержкой."
 )
-
-
-@dataclass
-class OrderDraft:
-    name: str = ""
-    contact: str = ""
-    project: str = ""
 
 
 def shop_keyboard() -> InlineKeyboardMarkup:
@@ -270,25 +135,13 @@ def landing_keyboard() -> InlineKeyboardMarkup:
             [InlineKeyboardButton("🖥 Открыть админ-панель", callback_data="show_admin")],
             [InlineKeyboardButton("📁 Посмотреть кейсы", callback_data="show_cases")],
         ]
-    ) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton("🛒 Заказать на FunPay", url=FUNPAY_URL)],
-            [InlineKeyboardButton("✨ Смотреть портфолио", callback_data="show_portfolio")],
-            [InlineKeyboardButton("💎 Посмотреть тарифы", callback_data="show_pricing")],
-        ]
     )
 
 
-def order_keyboard() -> InlineKeyboardMarkup:
+def back_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         [
             [InlineKeyboardButton("🏠 На главный экран", callback_data="show_home")],
-        ]
-    ) -> InlineKeyboardMarkup:
-    return InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton("🛒 Перейти к заказу", url=FUNPAY_URL)],
         ]
     )
 
@@ -296,10 +149,9 @@ def order_keyboard() -> InlineKeyboardMarkup:
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.effective_user
     await update.message.reply_text(
-        f"Привет, {user.first_name or 'друг'}! 👋
-
-"
-        "Это демонстрационный бот-портфолио. Он показывает, как могут выглядеть разные экраны и сценарии внутри Telegram.",
+        f"Привет, {user.first_name or 'друг'}! 👋\n\n"
+        "Это демонстрационный бот-портфолио. "
+        "Он показывает, как могут выглядеть разные экраны и сценарии внутри Telegram.",
         reply_markup=MAIN_MENU,
     )
     await show_home_message(update.message)
@@ -307,19 +159,18 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def show_home_message(target_message) -> None:
     frames = [
-        "<b>✨ Главный экран</b>
-
-▰▱▱ Загрузка интерфейса...",
-        "<b>✨ Главный экран</b>
-
-▰▰▱ Подготовка разделов...",
-        "<b>✨ Главный экран</b>
-
-▰▰▰ Готово.",
+        "<b>✨ Главный экран</b>\n\n▰▱▱ Загрузка интерфейса...",
+        "<b>✨ Главный экран</b>\n\n▰▰▱ Подготовка разделов...",
+        "<b>✨ Главный экран</b>\n\n▰▰▰ Готово.",
     ]
     for frame in frames:
         await target_message.reply_text(frame, parse_mode=ParseMode.HTML)
-    await target_message.reply_text(HERO_TEXT, parse_mode=ParseMode.HTML, reply_markup=landing_keyboard())
+
+    await target_message.reply_text(
+        HERO_TEXT,
+        parse_mode=ParseMode.HTML,
+        reply_markup=landing_keyboard(),
+    )
 
 
 async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -330,41 +181,56 @@ async def menu_router(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return ConversationHandler.END
 
     if text == "🛍 Демо магазин":
-        await update.message.reply_text(SHOP_TEXT, parse_mode=ParseMode.HTML, reply_markup=shop_keyboard())
+        await update.message.reply_text(
+            SHOP_TEXT,
+            parse_mode=ParseMode.HTML,
+            reply_markup=shop_keyboard(),
+        )
         return ConversationHandler.END
 
     if text == "🧰 Возможности":
-        await update.message.reply_text(FEATURES_TEXT, parse_mode=ParseMode.HTML, reply_markup=order_keyboard())
+        await update.message.reply_text(
+            FEATURES_TEXT,
+            parse_mode=ParseMode.HTML,
+            reply_markup=back_keyboard(),
+        )
         return ConversationHandler.END
 
     if text == "🖥 Демо админ-панель":
-        await update.message.reply_text(ADMIN_TEXT, parse_mode=ParseMode.HTML, reply_markup=admin_keyboard())
+        await update.message.reply_text(
+            ADMIN_TEXT,
+            parse_mode=ParseMode.HTML,
+            reply_markup=admin_keyboard(),
+        )
         return ConversationHandler.END
 
     if text == "📁 Кейсы":
-        await update.message.reply_text(CASES_TEXT, parse_mode=ParseMode.HTML, reply_markup=order_keyboard())
+        await update.message.reply_text(
+            CASES_TEXT,
+            parse_mode=ParseMode.HTML,
+            reply_markup=back_keyboard(),
+        )
         return ConversationHandler.END
 
-        if text == "🧩 Возможности":
-        await update.message.reply_text(FEATURES_TEXT, parse_mode=ParseMode.HTML, reply_markup=order_keyboard())
-        return ConversationHandler.END
-
-            if text == "📨 Демо форма":
+    if text == "📨 Демо форма":
         await update.message.reply_text(CONTACT_TEXT, parse_mode=ParseMode.HTML)
-        await update.message.reply_text("Напиши любое сообщение, чтобы увидеть пример обработки формы.")
+        await update.message.reply_text(
+            "Напиши любое сообщение, чтобы увидеть пример обработки формы."
+        )
         return SUPPORT_MESSAGE
 
-    if text == "ℹ️ О студии":
-        await update.message.reply_text(ABOUT_TEXT, parse_mode=ParseMode.HTML, reply_markup=order_keyboard())
+    if text == "ℹ️ О проекте":
+        await update.message.reply_text(
+            ABOUT_TEXT,
+            parse_mode=ParseMode.HTML,
+            reply_markup=back_keyboard(),
+        )
         return ConversationHandler.END
 
-        if text == "ℹ️ О проекте":
-        await update.message.reply_text(ABOUT_TEXT, parse_mode=ParseMode.HTML, reply_markup=order_keyboard())
-        return ConversationHandler.END
-
-    
-
-    await update.message.reply_text("Выбери нужный раздел в меню 👇", reply_markup=MAIN_MENU)
+    await update.message.reply_text(
+        "Выбери нужный раздел в меню 👇",
+        reply_markup=MAIN_MENU,
+    )
     return ConversationHandler.END
 
 
@@ -373,76 +239,94 @@ async def callback_router(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     await query.answer()
 
     product_cards = {
-        "product_1": "<b>📦 Товар 1</b>
-
-Пример карточки товара:
-• изображение/обложка
-• описание
-• цена
-• кнопка заказа
-
-<i>Используется как демонстрация магазина.</i>",
-        "product_2": "<b>🎧 Товар 2</b>
-
-Пример другой карточки товара с кратким описанием и CTA-кнопками.
-
-<i>Можно адаптировать под цифровые товары или услуги.</i>",
-        "product_3": "<b>💎 Товар 3</b>
-
-Карточка премиум-позиции: акцент на визуал, преимущества и сценарий оформления.
-
-<i>Подходит для витрины услуг.</i>",
-        "admin_leads": "<b>📥 Новые заявки</b>
-
-• Иван — бот-магазин
-• Анна — бот услуг
-• Максим — бот с оплатой
-
-<i>Демо списка заявок в админке.</i>",
-        "admin_stats": "<b>📊 Статистика</b>
-
-• Пользователей: 128
-• Заявок: 17
-• Повторных обращений: 6
-
-<i>Пример экрана аналитики.</i>",
-        "admin_broadcast": "<b>📣 Рассылка</b>
-
-Здесь может быть создание текста рассылки, выбор сегмента и запуск отправки.
-
-<i>Демо-экран инструмента администратора.</i>",
+        "product_1": (
+            "<b>📦 Товар 1</b>\n\n"
+            "Пример карточки товара:\n"
+            "• изображение / обложка\n"
+            "• описание\n"
+            "• цена\n"
+            "• кнопка заказа\n\n"
+            "<i>Используется как демонстрация магазина.</i>"
+        ),
+        "product_2": (
+            "<b>🎧 Товар 2</b>\n\n"
+            "Пример другой карточки товара с кратким описанием и кнопками.\n\n"
+            "<i>Можно адаптировать под цифровые товары или услуги.</i>"
+        ),
+        "product_3": (
+            "<b>💎 Товар 3</b>\n\n"
+            "Карточка премиум-позиции: акцент на визуал, преимущества и сценарий оформления.\n\n"
+            "<i>Подходит для витрины услуг.</i>"
+        ),
+        "admin_leads": (
+            "<b>📥 Новые заявки</b>\n\n"
+            "• Иван — бот-магазин\n"
+            "• Анна — бот услуг\n"
+            "• Максим — бот с оплатой\n\n"
+            "<i>Демо списка заявок в админке.</i>"
+        ),
+        "admin_stats": (
+            "<b>📊 Статистика</b>\n\n"
+            "• Пользователей: 128\n"
+            "• Заявок: 17\n"
+            "• Повторных обращений: 6\n\n"
+            "<i>Пример экрана аналитики.</i>"
+        ),
+        "admin_broadcast": (
+            "<b>📣 Рассылка</b>\n\n"
+            "Здесь может быть создание текста рассылки, выбор сегмента и запуск отправки.\n\n"
+            "<i>Демо-экран инструмента администратора.</i>"
+        ),
     }
 
     if query.data == "show_shop":
-        await query.message.reply_text(SHOP_TEXT, parse_mode=ParseMode.HTML, reply_markup=shop_keyboard())
+        await query.message.reply_text(
+            SHOP_TEXT,
+            parse_mode=ParseMode.HTML,
+            reply_markup=shop_keyboard(),
+        )
         return
+
     if query.data == "show_admin":
-        await query.message.reply_text(ADMIN_TEXT, parse_mode=ParseMode.HTML, reply_markup=admin_keyboard())
+        await query.message.reply_text(
+            ADMIN_TEXT,
+            parse_mode=ParseMode.HTML,
+            reply_markup=admin_keyboard(),
+        )
         return
+
     if query.data == "show_cases":
-        await query.message.reply_text(CASES_TEXT, parse_mode=ParseMode.HTML, reply_markup=order_keyboard())
+        await query.message.reply_text(
+            CASES_TEXT,
+            parse_mode=ParseMode.HTML,
+            reply_markup=back_keyboard(),
+        )
         return
+
     if query.data == "show_home":
         await show_home_message(query.message)
         return
+
     if query.data in product_cards:
-        await query.message.reply_text(product_cards[query.data], parse_mode=ParseMode.HTML, reply_markup=order_keyboard())
+        await query.message.reply_text(
+            product_cards[query.data],
+            parse_mode=ParseMode.HTML,
+            reply_markup=back_keyboard(),
+        )
         return
 
 
-async def support_message(update: Update, context: ContextTypes.DEFAULT_TYPE):(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def support_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = (update.message.text or "").strip()
+
     await update.message.reply_text(
         "<b>📩 Сообщение отправлено</b>\n\n"
         f"{text}\n\n"
-        "В рабочей версии это сообщение отправляется админу, менеджеру или в CRM.",
+        "В рабочей версии это сообщение может отправляться админу, менеджеру или в CRM.",
         parse_mode=ParseMode.HTML,
         reply_markup=MAIN_MENU,
     )
     return ConversationHandler.END
-
-
-
 
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -466,11 +350,16 @@ def main() -> None:
     )
 
     app.add_handler(CommandHandler("start", start))
-    app.add_handler(CallbackQueryHandler(callback_router, pattern=r"^(show_shop|show_admin|show_cases|show_home|product_1|product_2|product_3|admin_leads|admin_stats|admin_broadcast)$"))
+    app.add_handler(
+        CallbackQueryHandler(
+            callback_router,
+            pattern=r"^(show_shop|show_admin|show_cases|show_home|product_1|product_2|product_3|admin_leads|admin_stats|admin_broadcast)$",
+        )
+    )
     app.add_handler(support_conversation)
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, menu_router))
 
-    logger.info("Studio demo bot started")
+    logger.info("Demo bot started")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 
